@@ -11,9 +11,10 @@ public class ActiveBall {
     private int w, h; // Width and height of the panel
     private double radius = 25; // Radius of the ActiveBall
     private double mass; // Mass of the ActiveBall
-    private Color col = Color.WHITE; // Default color of ActiveBall
+    private Color color = Color.WHITE; // Default color of ActiveBall
     private Random rand; // Random object for randomizing ActiveBall properties
     private double coFric = 0.06, gravity = 9.806; // Coefficient of friction and gravity constant
+    private double min = 156, max = 170; // Minimum and maximum mass of the ActiveBall
 
     public ActiveBall(double x, double y, double dx, double dy, int w, int h) 
     {
@@ -26,8 +27,6 @@ public class ActiveBall {
         this.h = h;
 
         // Randomize the mass of the ActiveBall between (min) and (max)
-        int min = 156;
-        int max = 170;
         this.mass = rand.nextDouble(max-min) + min;
     }
 
@@ -128,19 +127,156 @@ public class ActiveBall {
         return new Point((int)this.x, (int)this.y);
     }
 
-    public void setMass(double mass) // Sets the mass of the ActiveBall
+    public void randColor() // Randomizes the color of the ActiveBall
+    {
+        this.color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+    }
+
+    public void regenMass() // Regenerates the mass of the ActiveBall
+    {
+        this.mass = rand.nextDouble(max-min) + min;
+    }
+
+    public void setMassRange(double min, double max, boolean recalculate) // Sets the minimum and maximum mass of the ActiveBall maximum must be lower than minimum. If recalculate is true, the mass of the ActiveBall will be regenerated.
+    {
+        if(max < min)
+        {
+            this.min = min;
+            this.max = max;
+            if(recalculate)
+                regenMass();
+        }
+    }
+
+    // Start of generic getters/setters
+
+    public double getX() // Returns x-position
+    {
+        return x;
+    }
+
+    public void setX(double x) // Overrides the x-position with the value passed into the method
+    {
+        this.x = x;
+    }
+
+    public double getY() // Returns y-position
+    {
+        return y;
+    }
+
+    public void setY(double y) // Overrides the y-position with the value passed into the method
+    {
+        this.y = y;
+    }
+
+    public double getDx() // Returns x-velocity
+    {
+        return dx;
+    }
+
+    public void setDx(double dx) // Overrides the x-velocity with the value passed into the method
+    {
+        this.dx = dx;
+    }
+
+    public double getDy() // Returns y-velocity
+    {
+        return dy;
+    }
+
+    public void setDy(double dy) // Overrides the y-velocity with the value passed into the method
+    {
+        this.dy = dy;
+    }
+
+    public int getW() // Returns width
+    {
+        return w;
+    }
+
+    public void setW(int w) // Overrides the width with the value passed into the method
+    {
+        this.w = w;
+    }
+
+    public int getH() // Returns height
+    {
+        return h;
+    }
+
+    public void setH(int h) // Overrides the height with the value passed into the method
+    {
+        this.h = h;
+    }
+
+    public double getRadius() // Returns radius
+    {
+        return radius;
+    }
+
+    public void setRadius(double radius) // Overrides the radius with the value passed into the method
+    {
+        this.radius = radius;
+    }
+
+    public double getMass() // Returns mass
+    {
+        return mass;
+    }
+
+    public void setMass(double mass) // Overrides the mass with the value passed into the method
     {
         this.mass = mass;
     }
 
-    public Color getColor() // Returns the color of the ActiveBall
+    public Color getColor() // Returns color
     {
-        return this.col;
+        return color;
     }
 
-    public void randColor() // Randomizes the color of the ActiveBall
+    public void setColor(Color color) // Overrides the color with the value passed into the method
     {
-        this.col = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+        this.color = color;
     }
 
+    public double getCoFric() // Returns coefficient of friction
+    {
+        return coFric;
+    }
+
+    public void setCoFric(double coFric) // Overrides the coefficient of friction with the value passed into the method
+    {
+        this.coFric = coFric;
+    }
+
+    public double getGravity() // Returns gravity
+    {
+        return gravity;
+    }
+
+    public void setGravity(double gravity) // Overrides the gravity with the value passed into the method
+    {
+        this.gravity = gravity;
+    } 
+
+    public double min() // Returns the minimum mass
+    {
+        return this.min;
+    }
+
+    public void setMin(double min) // Overrides the minimum mass with the value passed into the method
+    {
+        this.min = min;
+    }
+
+    public double max() // Returns the maximum mass
+    {
+        return this.max;
+    }
+
+    public void setMax(double max) // Overrides the maximum mass with the value passed into the method
+    {
+        this.max = max;
+    }
 }
