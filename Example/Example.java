@@ -51,17 +51,17 @@ public class Example extends JPanel
 		}
 	}
 
-	public void paintComponent(Graphics g)
+	public void paintComponent(Graphics g) // Paints the screen
 	{
 		super.paintComponent(g);
 
-		for(ActiveBall ball : balls) // draws the ActiveBallsalls
+		for(ActiveBall ball : balls) // Draws the ActiveBallsalls
 		{
 			g.setColor(ball.getColor());
 			ball.draw(g);
 		}
 
-		for (int i = 0; i < balls.length; i++)  // checks for collision between all ActiveBalls and responds appropriately
+		for (int i = 0; i < balls.length; i++)  // Checks for collision between all ActiveBalls and responds appropriately
 		{
 			ActiveBall b1 = balls[i];
 			for (int j = i + 1; j < balls.length; j++) 
@@ -72,7 +72,7 @@ public class Example extends JPanel
 			}
 		}
 
-		for (ActiveBall ball : balls) // checks for collision with wall and all ActiveBalls and responds appropriately
+		for (ActiveBall ball : balls) // Checks for collision with wall and all ActiveBalls and responds appropriately
 		{
 			if(ball.collidesWithWall())
 				ball.collideWall();
