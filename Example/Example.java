@@ -13,18 +13,19 @@ public class Example extends JPanel
 	private Timer timer;
 	private ActiveBall[] balls;
 
-	private int numBalls = 30; //Number of balls to be created
-    private double speedDiff = 20; // half of this is the max speed in either direction of each ball on creation
+	private int numBalls = 30; // Number of ActiveBalls to be created
+    private double speedDiff = 20; // Half of this is the max speed in either direction of each ActiveBall on creation
 
 	public Example(int w, int h)
 	{
 		this.setPreferredSize(new Dimension(w,h));
         Random rand = new Random();
 
-		//Create a timer that will call the repaint method every 10 milliseconds
-		timer = new Timer(10, new repaintListener());
+		int speedMS = 10; // Speed of the timer in milliseconds
+		// Create a timer that will call the repaint method every (speedMS) milliseconds
+		timer = new Timer(speedMS, new repaintListener());
 
-		//Create the balls randomly
+		// Create the balls randomly
 		balls = new ActiveBall[numBalls];
 		for (int i = 0; i < numBalls; i++) 
 		{
@@ -35,16 +36,17 @@ public class Example extends JPanel
 			balls[i] = new ActiveBall(x, y, dx, dy, w, h);
 		}
 
-		//Start the timer and set the background to black
+		// Start the timer and set the background to black
 		timer.start();
 		setBackground(Color.BLACK);
 	}
 
+	// Called for every tick of the timer (timer)
 	private class repaintListener implements ActionListener
 	{
 		public void actionPerformed(ActionEvent e) 
 		{
-			//Call the repaint method to redraw the screen
+			// Call the repaint method to redraw the screen
 			repaint();
 		}
 	}
@@ -53,13 +55,13 @@ public class Example extends JPanel
 	{
 		super.paintComponent(g);
 
-		for (ActiveBall ball : balls) 
+		for(ActiveBall ball : balls) // draws the ActiveBallsalls
 		{
 			g.setColor(ball.getColor());
 			ball.draw(g);
 		}
 
-		for (int i = 0; i < balls.length; i++) 
+		for (int i = 0; i < balls.length; i++)  // checks for collision between all ActiveBalls and responds appropriately
 		{
 			ActiveBall b1 = balls[i];
 			for (int j = i + 1; j < balls.length; j++) 
@@ -70,11 +72,10 @@ public class Example extends JPanel
 			}
 		}
 
-		for (ActiveBall ball : balls)
+		for (ActiveBall ball : balls) // checks for collision with wall and all ActiveBalls and responds appropriately
 		{
 			if(ball.collidesWithWall())
 				ball.collideWall();
-			ball.updatePosition();
 		}
 	}
 
