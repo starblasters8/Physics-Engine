@@ -137,6 +137,12 @@ public class ActiveBall {
         this.mass = rand.nextDouble(max-min) + min;
     }
 
+    public void regenVelocity(double speedDiff) // Regenerates the velocity of the ActiveBall
+    {
+        this.dx = rand.nextDouble(speedDiff) - speedDiff/2;
+		this.dy = rand.nextDouble(speedDiff) - speedDiff/2;
+    }
+
     public void setMassRange(double min, double max, boolean recalculate) // Sets the minimum and maximum mass of the ActiveBall maximum must be lower than minimum. If recalculate is true, the mass of the ActiveBall will be regenerated.
     {
         if(max < min)
