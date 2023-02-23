@@ -34,7 +34,7 @@ public class ActiveBall {
         this.mass = rand.nextDouble(max-min) + min;
     }
 
-    public ActiveBall(double x, double y, int w, int h, int radius, int ID) // Start with no velocity and a set radius and ID
+    public ActiveBall(double x, double y, int w, int h, int radius, int ID) // Start with no velocity and a set radius and ID (used for pool)
     {
         rand = new Random();
         this.x = x;;
@@ -56,10 +56,10 @@ public class ActiveBall {
         updatePosition(); // Updates position of ActiveBall
         g.fillOval((int)this.x, (int)this.y, (int)this.radius*2, (int)this.radius*2); // Draws the ActiveBall at its given place
 
-        if(useID) // Draws the ball if it's a pool ball
+        if(useID && ID != 0) // Draws the ball if it's a pool ball
         {
             g.setColor(Color.WHITE);
-            int smallDiameter = (int) (this.radius * 2 * 0.6);
+            int smallDiameter = (int) (this.radius*2*0.6);
             int smallX = (int) (this.x + (this.radius - smallDiameter / 2));
             int smallY = (int) (this.y + (this.radius - smallDiameter / 2));
             g.fillOval(smallX, smallY, smallDiameter, smallDiameter);
@@ -80,7 +80,10 @@ public class ActiveBall {
             case 8:
                 color = Color.BLACK;
                 break;
-
+            case 0:
+                color = Color.WHITE;
+                dy = -15;
+                break;
             default:
                 randPoolColor();
                 break;
@@ -100,10 +103,16 @@ public class ActiveBall {
 
     public void collideWall() // Responds to collision with wall
     {
+        System.out.println("\n");
+        System.out.println("Old DX: " + this.dx);
+        System.out.println("Old DY: " + this.dy);
+        System.out.println();
         if(this.x + this.dx <= 0 || this.x + this.dx >= this.w-this.radius*2)
             this.dx *= -1;
         if(this.y + this.dy <= 0 || this.y + this.dy >= this.h-this.radius*2)
             this.dy *= -1;
+        System.out.println("New DX: " + this.dx);
+        System.out.println("New DY: " + this.dy);
 
         if(!useID) // Randomizes color of ActiveBall
             randColor();
@@ -118,7 +127,7 @@ public class ActiveBall {
         this.dx += (this.dx != 0)? ((this.dx > 0) ? -frictionVelocityX : frictionVelocityX) : 0; // Updates the x velocity of the ActiveBall
         this.dy += (this.dy != 0)? ((this.dy > 0) ? -frictionVelocityY : frictionVelocityY) : 0; // Updates the y velocity of the ActiveBall
         
-        double minSpeed = 0.01; // minimum speed of the ActiveBall (to prevent it from moving forever)
+        double minSpeed = 0.1; // minimum speed of the ActiveBall (to prevent it from moving forever)
         this.dx = (Math.abs(this.dx) < minSpeed)? 0 : this.dx; // Sets the x velocity to 0 if it is less than the minimum speed
         this.dy = (Math.abs(this.dy) < minSpeed)? 0 : this.dy; // Sets the y velocity to 0 if it is less than the minimum speed
 

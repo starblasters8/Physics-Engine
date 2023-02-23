@@ -13,7 +13,7 @@ public class PoolPanel extends JPanel
 	private ActiveBall[] balls;
 
 	private int radius = 15; // Radius of the ActiveBalls
-	private int numBalls = 15; // Number of ActiveBalls to be created
+	private int numBalls = 16; // Number of ActiveBalls to be created
 	private int offsetY, offsetX; // Offset of the ActiveBalls
 	private int tableW, tableH; // Size of the table
 
@@ -26,23 +26,25 @@ public class PoolPanel extends JPanel
 		// Create a timer that will call the repaint method every (speedMS) milliseconds
 		timer = new Timer(speedMS, new repaintListener());
 		
-		offsetX = 50; // Offset of the ActiveBalls from the left side of the window
+		offsetX = 250; // Offset of the ActiveBalls from the left side of the window
 		offsetY = 50; // Offset of the ActiveBalls from the top of the window
 		
-		tableW = w; // Width of the table
-		tableH = h; // Height of the table
+		this.tableW = 600; // Width of the table
+		this.tableH = 600; // Height of the table
 
 		balls = new ActiveBall[numBalls]; // Creates an array of ActiveBalls
 		for(int i = 0; i < 5; i++) // Creates the first set of ActiveBalls
-			balls[i] = new ActiveBall((i*radius+(i*(radius+5))) + offsetX, offsetY, tableW, tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+15)); // Formula: 0.5x^2 - 5.5x + 15
+			balls[i] = new ActiveBall((i*radius+(i*(radius+5)))+offsetX, offsetY, this.tableW, this.tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+15)); // Formula: 0.5x^2 - 5.5x + 15
 		for(int i = 0; i < 4; i++) // Creates the second set of ActiveBalls
-			balls[i+5] = new ActiveBall((i*radius+(i*(radius+5))) + radius + offsetX, (radius*2) + offsetY, tableW, tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+14)); // Formula: 0.5x^2 - 5.5x + 14
+			balls[i+5] = new ActiveBall((i*radius+(i*(radius+5)))+radius+offsetX, (radius*2)+offsetY, this.tableW, this.tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+14)); // Formula: 0.5x^2 - 5.5x + 14
 		for(int i = 0; i < 3; i++) // Creates the third set of ActiveBalls
-			balls[i+9] = new ActiveBall((i*radius+(i*(radius+5))) + (radius*2) + offsetX, (radius*4) + offsetY, tableW, tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+13)); // Formula: 0.5x^2 - 5.5x + 13
+			balls[i+9] = new ActiveBall((i*radius+(i*(radius+5)))+(radius*2)+offsetX, (radius*4)+offsetY, this.tableW, this.tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+13)); // Formula: 0.5x^2 - 5.5x + 13
 		for(int i = 0; i < 2; i++) // Created the fourth et of ActiveBalls
-			balls[i+12] = new ActiveBall((i*radius+(i*(radius+5))) + (radius*3) + offsetX, (radius*6) + offsetY, tableW, tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+12)); // Formula: 0.5x^2 - 5.5x + 12
+			balls[i+12] = new ActiveBall((i*radius+(i*(radius+5)))+(radius*3)+offsetX, (radius*6)+offsetY, this.tableW, this.tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+12)); // Formula: 0.5x^2 - 5.5x + 12
 		for(int i = 0; i < 1; i++) // Creates the fifth set of ActiveBalls
-			balls[i+14] = new ActiveBall((i*radius+(i*(radius+5))) + (radius*4) + offsetX, (radius*8) + offsetY, tableW, tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+11)); // Formula: 0.5x^2 - 5.5x + 11
+			balls[i+14] = new ActiveBall((i*radius+(i*(radius+5)))+(radius*4)+offsetX, (radius*8)+offsetY, this.tableW, this.tableH, radius, (int)((0.5*Math.pow(i, 2))+(-5.5*i)+11)); // Formula: 0.5x^2 - 5.5x + 11
+
+		balls[15] = new ActiveBall((radius*4) + offsetX, (radius*25)+offsetY, this.tableW, this.tableH, radius, 0); // Creates the cue ball
 
 		for(ActiveBall ball : balls)
 			ball.setColorFromID();
@@ -56,7 +58,7 @@ public class PoolPanel extends JPanel
 	{
 		super.paintComponent(g);
 
-		for(ActiveBall ball : balls) // Draws the ActiveBallsalls
+		for(ActiveBall ball : balls) // Draws the ActiveBalls
 		{
 			g.setColor(ball.getColor());
 
@@ -78,7 +80,7 @@ public class PoolPanel extends JPanel
 			}
 		}
 
-		for (ActiveBall ball : balls) // Checks for collision with wall and all ActiveBalls and responds appropriately
+		for (ActiveBall ball : balls) // Checks for collision with wall on all ActiveBalls and responds appropriately
 		{
 			if(ball.collidesWithWall())
 				ball.collideWall();
