@@ -103,16 +103,10 @@ public class ActiveBall {
 
     public void collideWall() // Responds to collision with wall
     {
-        System.out.println("\n");
-        System.out.println("Old DX: " + this.dx);
-        System.out.println("Old DY: " + this.dy);
-        System.out.println();
         if(this.x + this.dx <= 0 || this.x + this.dx >= this.w-this.radius*2)
             this.dx *= -1;
         if(this.y + this.dy <= 0 || this.y + this.dy >= this.h-this.radius*2)
             this.dy *= -1;
-        System.out.println("New DX: " + this.dx);
-        System.out.println("New DY: " + this.dy);
 
         if(!useID) // Randomizes color of ActiveBall
             randColor();

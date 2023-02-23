@@ -29,8 +29,8 @@ public class PoolPanel extends JPanel
 		offsetX = 250; // Offset of the ActiveBalls from the left side of the window
 		offsetY = 50; // Offset of the ActiveBalls from the top of the window
 		
-		this.tableW = 600; // Width of the table
-		this.tableH = 600; // Height of the table
+		this.tableW = w; // Width of the table
+		this.tableH = h; // Height of the table
 
 		balls = new ActiveBall[numBalls]; // Creates an array of ActiveBalls
 		for(int i = 0; i < 5; i++) // Creates the first set of ActiveBalls
@@ -49,9 +49,9 @@ public class PoolPanel extends JPanel
 		for(ActiveBall ball : balls)
 			ball.setColorFromID();
 
-		// Start the timer and set the background to black
+		// Start the timer and set the background
 		timer.start();
-		setBackground(Color.BLACK);
+		setBackground(new Color(1, 40, 26));
 	}
 
 	public void paintComponent(Graphics g) // Paints the screen
@@ -61,11 +61,6 @@ public class PoolPanel extends JPanel
 		for(ActiveBall ball : balls) // Draws the ActiveBalls
 		{
 			g.setColor(ball.getColor());
-
-			// Sets the width and height of the ActiveBalls to whatever the window is (in case it changes)
-			ball.setW(this.getWidth()); 
-			ball.setH(this.getHeight());
-
 			ball.draw(g);
 		}
 
