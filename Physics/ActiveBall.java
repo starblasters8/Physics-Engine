@@ -16,6 +16,7 @@ public class ActiveBall {
     private double coFric = 0.06, gravity = 9.806; // Coefficient of friction and gravity constant
     private double min = 156, max = 170; // Minimum and maximum mass of the ActiveBall
     private int ID; // ID of the ActiveBall
+    private boolean useID; // Decide whether to use the ID's or not
 
     public ActiveBall(double x, double y, double dx, double dy, int w, int h) 
     {
@@ -27,6 +28,7 @@ public class ActiveBall {
         this.dy = dy;
         this.w = w;
         this.h = h;
+        useID = false;
 
         // Randomize the mass of the ActiveBall between (min) and (max)
         this.mass = rand.nextDouble(max-min) + min;
@@ -43,6 +45,7 @@ public class ActiveBall {
         this.h = h;
         this.radius = radius;
         this.ID = ID;
+        useID = true;
 
         // Randomize the mass of the ActiveBall between (min) and (max)
         this.mass = rand.nextDouble(max-min) + min;
@@ -51,19 +54,35 @@ public class ActiveBall {
     public void draw(Graphics g) // Draws the ActiveBall
     {
         updatePosition(); // Updates position of ActiveBall
-        g.fillOval((int)this.x, (int)this.y, (int)this.radius*2, (int)this.radius*2); // Draws the ActiveBall at it's given place
+        g.fillOval((int)this.x, (int)this.y, (int)this.radius*2, (int)this.radius*2); // Draws the ActiveBall at its given place
+
+        if(useID) // Draws the ball if it's a pool ball
+        {
+            g.setColor(Color.WHITE);
+            int smallDiameter = (int) (this.radius * 2 * 0.6);
+            int smallX = (int) (this.x + (this.radius - smallDiameter / 2));
+            int smallY = (int) (this.y + (this.radius - smallDiameter / 2));
+            g.fillOval(smallX, smallY, smallDiameter, smallDiameter);
+
+            g.setFont(new Font(g.getFont().getFontName(), Font.BOLD, g.getFont().getSize()));
+            g.setColor(Color.BLACK);
+            if(ID<10)
+                g.drawString(ID+"", (int)(this.x+radius-3), (int)(this.y+radius+5));
+            else
+                g.drawString(ID+"", (int)(this.x+radius-7), (int)(this.y+radius+5));
+        }
     }
 
     public void setColorFromID()
     {
         switch(ID)
         {
-            case 11:
+            case 8:
                 color = Color.BLACK;
                 break;
 
             default:
-                randColor();;
+                randPoolColor();
                 break;
         }
     }
@@ -86,8 +105,8 @@ public class ActiveBall {
         if(this.y + this.dy <= 0 || this.y + this.dy >= this.h-this.radius*2)
             this.dy *= -1;
 
-        // Randomizes color of ActiveBall
-        randColor();
+        if(!useID) // Randomizes color of ActiveBall
+            randColor();
     }
     
     public void updatePosition() // Updates the position of the ActiveBall and account for friction
@@ -148,9 +167,12 @@ public class ActiveBall {
         other.x += overlap / 2 * Math.cos(angle);
         other.y += overlap / 2 * Math.sin(angle);
 
-        // Randomize the color of the ActiveBall
-        randColor();
-        other.randColor();
+        if(!useID)
+        {
+            // Randomize the color of the ActiveBall
+            randColor();
+            other.randColor();
+        }
     }
 
     public int getID() // Returns the ID of the ActiveBall
@@ -166,6 +188,20 @@ public class ActiveBall {
     public void randColor() // Randomizes the color of the ActiveBall
     {
         this.color = new Color(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255));
+    }
+
+    public void randPoolColor() // Randomizes the color of the ActiveBall so that it's more clear and not black or white
+    {
+        int r = rand.nextInt(255);
+        int g = rand.nextInt(255);
+        int b = rand.nextInt(255);
+        int whiteThreshhold = 80; // The threshold for the color to be considered to close to white
+        int blackThreshold = 80; // The threshold for the color to be considered to close to black
+        if(r > 255-whiteThreshhold && g > 255-whiteThreshhold && b > 255-whiteThreshhold) // Check for closeness to white
+            randPoolColor();
+        if(r < blackThreshold && g < blackThreshold && b < blackThreshold) // Check for closeness to black
+            randPoolColor();
+        this.color = new Color(r, g, b);
     }
 
     public void regenMass() // Regenerates the mass of the ActiveBall
