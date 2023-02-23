@@ -9,16 +9,18 @@ public class ActiveBall {
     private double dx; // x velocity of the ActiveBall
     private double dy; // y velocity of the ActiveBall
     private int w, h; // Width and height of the panel
-    private double radius = 25; // Radius of the ActiveBall
+    private double radius; // Radius of the ActiveBall
     private double mass; // Mass of the ActiveBall
-    private Color color = Color.WHITE; // Default color of ActiveBall
+    private Color color = Color.white;; // Default color of ActiveBall
     private Random rand; // Random object for randomizing ActiveBall properties
     private double coFric = 0.06, gravity = 9.806; // Coefficient of friction and gravity constant
     private double min = 156, max = 170; // Minimum and maximum mass of the ActiveBall
+    private int ID; // ID of the ActiveBall
 
     public ActiveBall(double x, double y, double dx, double dy, int w, int h) 
     {
         rand = new Random();
+        radius = 25;
         this.x = x;
         this.y = y;
         this.dx = dx;
@@ -30,12 +32,41 @@ public class ActiveBall {
         this.mass = rand.nextDouble(max-min) + min;
     }
 
+    public ActiveBall(double x, double y, int w, int h, int radius, int ID) // Start with no velocity and a set radius and ID
+    {
+        rand = new Random();
+        this.x = x;;
+        this.y = y;
+        this.dx = 0;
+        this.dy = 0;
+        this.w = w;
+        this.h = h;
+        this.radius = radius;
+        this.ID = ID;
+
+        // Randomize the mass of the ActiveBall between (min) and (max)
+        this.mass = rand.nextDouble(max-min) + min;
+    }
+
     public void draw(Graphics g) // Draws the ActiveBall
     {
         updatePosition(); // Updates position of ActiveBall
         g.fillOval((int)this.x, (int)this.y, (int)this.radius*2, (int)this.radius*2); // Draws the ActiveBall at it's given place
     }
 
+    public void setColorFromID()
+    {
+        switch(ID)
+        {
+            case 11:
+                color = Color.BLACK;
+                break;
+
+            default:
+                randColor();;
+                break;
+        }
+    }
     
     public boolean collidesWith(ActiveBall other) // Checks if the ActiveBall collides with another ActiveBall (other)
     {
@@ -120,6 +151,11 @@ public class ActiveBall {
         // Randomize the color of the ActiveBall
         randColor();
         other.randColor();
+    }
+
+    public int getID() // Returns the ID of the ActiveBall
+    {
+        return this.ID;
     }
 
     public Point getLocation() // Returns the location of the ActiveBall as a Point
