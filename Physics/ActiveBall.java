@@ -17,6 +17,9 @@ public class ActiveBall {
     private double min = 156, max = 170; // Minimum and maximum mass of the ActiveBall
     private int ID; // ID of the ActiveBall
     private boolean useID; // Decide whether to use the ID's or not
+    private double circumference; // Circumference of the ActiveBall
+    private double rotX, rotY;
+    private double trackX, trackY;
 
     public ActiveBall(double x, double y, double dx, double dy, int w, int h) 
     {
@@ -46,6 +49,7 @@ public class ActiveBall {
         this.radius = radius;
         this.ID = ID;
         useID = true;
+        regenCircumference();
 
         // Randomize the mass of the ActiveBall between (min) and (max)
         this.mass = rand.nextDouble(max-min) + min;
@@ -70,7 +74,51 @@ public class ActiveBall {
                 g.drawString(ID+"", (int)(this.x+radius-3), (int)(this.y+radius+5));
             else
                 g.drawString(ID+"", (int)(this.x+radius-7), (int)(this.y+radius+5));
+
+
         }
+        if(useID && ID == 0) // Test tracking on cue ball
+        {
+            // calculate rotation angles based on ball movement
+            this.rotX += (this.dx / this.circumference) * 360;
+            this.rotY += (this.dy / this.circumference) * 360;
+
+            // calculate position of the red dot based on rotation angles
+            double dotX = this.radius * Math.sin(Math.toRadians(this.rotX));
+            double dotY = this.radius * Math.sin(Math.toRadians(this.rotY)) * -1; // flip y-axis
+
+            // translate position of the red dot to ball's coordinates
+            this.trackX = this.x + dotX;
+            this.trackY = this.y + dotY;
+
+            // ensure red dot stays inside ball
+            double distance = Math.sqrt(Math.pow(this.trackX - this.x, 2) + Math.pow(this.trackY - this.y, 2));
+            if (distance > this.radius) 
+            {
+                double ratio = this.radius / distance;
+                this.trackX = this.x + (this.trackX - this.x) * ratio;
+                this.trackY = this.y + (this.trackY - this.y) * ratio;
+            }
+
+            // draw red dot
+            g.setColor(Color.RED);
+            g.fillOval((int)((this.trackX+this.radius/2)+2.5), (int)((this.trackY+this.radius/2)+2.5), 5, 5);
+
+            // wrap rotation angles if they go beyond 360 degrees
+            if (this.rotX >= 360)
+                this.rotX -= 360;
+            if (this.rotY >= 360)
+                this.rotY -= 360;
+            if (this.rotX < 0)
+                this.rotX += 360;
+            if (this.rotY < 0)
+                this.rotY += 360;
+        }
+    }
+
+    public void regenCircumference() // Generates the circumference of the ActiveBall
+    {
+        this.circumference = 2 * Math.PI * radius;
     }
 
     public void setColorFromID()
@@ -299,6 +347,7 @@ public class ActiveBall {
     public void setRadius(double radius) // Overrides the radius with the value passed into the method
     {
         this.radius = radius;
+        regenCircumference();
     }
 
     public double getMass() // Returns mass
