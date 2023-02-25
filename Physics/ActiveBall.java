@@ -84,7 +84,6 @@ public class ActiveBall {
             this.rotX += (this.dx / this.circumference) * 360;
             this.rotY += (this.dy / this.circumference) * 360;
 
-            System.out.println((int)rotX + " : " + (int)rotY);
 
             // calculate position of the dot based on rotation angles
             double dotX = this.radius * Math.sin(Math.toRadians(this.rotX));
@@ -103,11 +102,9 @@ public class ActiveBall {
                 this.trackY = this.y + (this.trackY - this.y) * ratio;
             }
 
+            System.out.println((int)rotX + " : " + (int)rotY);
 
-            if((this.rotX > 90 && this.rotX < 270)||(this.rotY > 90 && this.rotY < 270))
-                g.setColor(Color.RED);
-            else
-                g.setColor(Color.BLUE);
+            g.setColor(Color.RED);
 
             // draw dot
             int dotSize = 10;
