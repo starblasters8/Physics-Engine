@@ -3,7 +3,8 @@ package Physics;
 import java.awt.*;
 import java.util.Random;
 
-public class ActiveBall {
+public class ActiveBall // Keep in mind, this is a representation of a 3d sphere in a 2d space, the x and y coordinates have no z component because it is on a flat plane with no incline
+{
     private double x; // x-coordinate of the ActiveBall
     private double y; // y-coordinate of the ActiveBall
     private double dx; // x velocity of the ActiveBall
@@ -104,8 +105,6 @@ public class ActiveBall {
 
             System.out.println((int)rotX + " : " + (int)rotY);
 
-            g.setColor(Color.RED);
-
             // draw dot
             int dotSize = 10;
             g.fillOval((int)((this.trackX+this.radius/2)+(dotSize/2)), (int)((this.trackY+this.radius/2)+(dotSize/2)), dotSize, dotSize);
@@ -136,7 +135,6 @@ public class ActiveBall {
                 break;
             case 0:
                 color = Color.WHITE;
-                dy = -15;
                 break;
             default:
                 randPoolColor();
