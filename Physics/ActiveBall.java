@@ -103,10 +103,15 @@ public class ActiveBall {
                 this.trackY = this.y + (this.trackY - this.y) * ratio;
             }
 
-            g.setColor(Color.RED);
+
+            if((this.rotX > 90 && this.rotX < 270)||(this.rotY > 90 && this.rotY < 270))
+                g.setColor(Color.RED);
+            else
+                g.setColor(Color.BLUE);
 
             // draw dot
-            g.fillOval((int)((this.trackX+this.radius/2)+2.5), (int)((this.trackY+this.radius/2)+2.5), 5, 5);
+            int dotSize = 10;
+            g.fillOval((int)((this.trackX+this.radius/2)+(dotSize/2)), (int)((this.trackY+this.radius/2)+(dotSize/2)), dotSize, dotSize);
 
             // wrap rotation angles if they go beyond 360 degrees
             if (this.rotX >= 360)
