@@ -79,29 +79,33 @@ public class ActiveBall {
         }
         if(useID && ID == 0) // Test tracking on cue ball
         {
+
             // calculate rotation angles based on ball movement
             this.rotX += (this.dx / this.circumference) * 360;
             this.rotY += (this.dy / this.circumference) * 360;
 
-            // calculate position of the red dot based on rotation angles
+            System.out.println((int)rotX + " : " + (int)rotY);
+
+            // calculate position of the dot based on rotation angles
             double dotX = this.radius * Math.sin(Math.toRadians(this.rotX));
             double dotY = this.radius * Math.sin(Math.toRadians(this.rotY)) * -1; // flip y-axis
 
-            // translate position of the red dot to ball's coordinates
+            // translate position of the dot to ball's coordinates
             this.trackX = this.x + dotX;
             this.trackY = this.y + dotY;
 
-            // ensure red dot stays inside ball
+            // ensure dot stays inside ball
             double distance = Math.sqrt(Math.pow(this.trackX - this.x, 2) + Math.pow(this.trackY - this.y, 2));
-            if (distance > this.radius) 
+            if(distance > this.radius) 
             {
                 double ratio = this.radius / distance;
                 this.trackX = this.x + (this.trackX - this.x) * ratio;
                 this.trackY = this.y + (this.trackY - this.y) * ratio;
             }
 
-            // draw red dot
             g.setColor(Color.RED);
+
+            // draw dot
             g.fillOval((int)((this.trackX+this.radius/2)+2.5), (int)((this.trackY+this.radius/2)+2.5), 5, 5);
 
             // wrap rotation angles if they go beyond 360 degrees

@@ -49,6 +49,10 @@ public class PoolPanel extends JPanel
 		for(ActiveBall ball : balls)
 			ball.setColorFromID();
 
+		// Adds user control
+		this.addKeyListener(new Keys());
+		this.setFocusable(true);
+
 		// Start the timer and set the background
 		timer.start();
 		setBackground(new Color(1, 40, 26));
@@ -91,6 +95,30 @@ public class PoolPanel extends JPanel
 			// Call the repaint method to redraw the screen
 			repaint();
 		}
+	}
+
+	private class Keys implements KeyListener
+	{
+		public void keyPressed(KeyEvent e)
+		{
+			int speed = 1;
+			if(e.getKeyCode() == KeyEvent.VK_UP)
+				balls[15].setDy(-speed+balls[15].getDy());
+			if(e.getKeyCode() == KeyEvent.VK_DOWN)
+				balls[15].setDy(speed+balls[15].getDy());
+			if(e.getKeyCode() == KeyEvent.VK_LEFT)
+				balls[15].setDx(-speed+balls[15].getDx());
+			if(e.getKeyCode() == KeyEvent.VK_RIGHT)
+				balls[15].setDx(speed+balls[15].getDx());
+			if(e.getKeyCode() == KeyEvent.VK_SPACE)
+			{
+				balls[15].setDx(0);
+				balls[15].setDy(0);
+			}
+		}
+
+		public void keyReleased(KeyEvent e){}
+		public void keyTyped(KeyEvent e){}
 	}
 	
     //Run me!
