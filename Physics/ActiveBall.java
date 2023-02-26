@@ -19,7 +19,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
     private int ID; // ID of the ActiveBall
     private boolean useID; // Decide whether to use the ID's or not
     private double circumference; // Circumference of the ActiveBall
-    private double rotX, rotY;
+    private double yaw, pitch;
     private double trackX, trackY;
 
     public ActiveBall(double x, double y, double dx, double dy, int w, int h) 
@@ -82,13 +82,13 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
         {
 
             // calculate rotation angles based on ball movement
-            this.rotX += (this.dx / this.circumference) * 360;
-            this.rotY += (this.dy / this.circumference) * 360;
+            this.yaw += (this.dx / this.circumference) * 360;
+            this.pitch += (this.dy / this.circumference) * 360;
 
 
             // calculate position of the dot based on rotation angles
-            double dotX = this.radius * Math.sin(Math.toRadians(this.rotX));
-            double dotY = this.radius * Math.sin(Math.toRadians(this.rotY)) * -1; // flip y-axis
+            double dotX = this.radius * Math.sin(Math.toRadians(this.yaw));
+            double dotY = this.radius * Math.sin(Math.toRadians(this.pitch)) * -1; // flip y-axis
 
             // translate position of the dot to ball's coordinates
             this.trackX = this.x + dotX;
@@ -103,21 +103,21 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
                 this.trackY = this.y + (this.trackY - this.y) * ratio;
             }
 
-            System.out.println((int)rotX + " : " + (int)rotY);
+            System.out.println((int)yaw + " : " + (int)pitch);
 
             // draw dot
             int dotSize = 10;
             g.fillOval((int)((this.trackX+this.radius/2)+(dotSize/2)), (int)((this.trackY+this.radius/2)+(dotSize/2)), dotSize, dotSize);
 
             // wrap rotation angles if they go beyond 360 degrees
-            if (this.rotX >= 360)
-                this.rotX -= 360;
-            if (this.rotY >= 360)
-                this.rotY -= 360;
-            if (this.rotX < 0)
-                this.rotX += 360;
-            if (this.rotY < 0)
-                this.rotY += 360;
+            if (this.yaw >= 360)
+                this.yaw -= 360;
+            if (this.pitch >= 360)
+                this.pitch -= 360;
+            if (this.yaw < 0)
+                this.yaw += 360;
+            if (this.pitch < 0)
+                this.pitch += 360;
         }
     }
 
