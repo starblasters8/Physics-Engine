@@ -139,7 +139,8 @@ public class PoolPanel extends JPanel
 			g.fillOval(mousePos.x-tempRad, mousePos.y-tempRad, tempRad*2, tempRad*2);
 		}
 
-		if (mousePos != null && balls[15].getDx() == 0 && balls[15].getDy() == 0) {
+		if(mousePos != null && balls[15].getDx() == 0 && balls[15].getDy() == 0) 
+		{
 			Graphics2D g2 = (Graphics2D) g;
 			g2.setColor(Color.MAGENTA);
 			g2.setStroke(new BasicStroke(5));
@@ -148,6 +149,7 @@ public class PoolPanel extends JPanel
 			int x2 = mousePos.x;
 			int y2 = mousePos.y;
 			g2.drawLine(x1, y1, x2, y2);
+			g2.setStroke(new BasicStroke(3));
 			g2.setColor(Color.GRAY);
 		
 			// calculate the second endpoint for the line to the end of the screen in the opposite direction
@@ -200,7 +202,7 @@ public class PoolPanel extends JPanel
 			{
 				double moveXRatio = balls[15].getX()+balls[15].getRadius()-e.getX();
 				double moveYRatio = balls[15].getY()+balls[15].getRadius()-e.getY();
-				double moveSpeed = balls[15].getLocation().distance(mousePos)/1000;
+				double moveSpeed = balls[15].getLocation().distance(mousePos)/1250;
 				balls[15].setDx(moveXRatio*moveSpeed);
 				balls[15].setDy(moveYRatio*moveSpeed);
 			}

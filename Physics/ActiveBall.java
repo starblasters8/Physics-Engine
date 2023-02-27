@@ -18,7 +18,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
     private double mass; // Mass of the ActiveBall
     private Color color = Color.white;; // Default color of ActiveBall
     private Random rand; // Random object for randomizing ActiveBall properties
-    private double coFric = 0.06, gravity = 9.806; // Coefficient of friction and gravity constant
+    private double coFric = 0.1, gravity = 9.806; // Coefficient of friction and gravity constant
     private double min = 156, max = 170; // Minimum and maximum mass of the ActiveBall
     private int ID; // ID of the ActiveBall
     private boolean useID; // Decide whether to use the ID's or not
@@ -118,16 +118,8 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
                     this.trackY = this.y + (this.trackY - this.y) * ratio;
                 }
 
-                drawPointer(g);
-
-                g.setColor(Color.WHITE);
-                String yawText = "yaw: " + (int)yaw;
-                String pitchText = "pitch: " + (int)pitch;
-                String rollText = "roll: " + (int)roll;
-                g.drawString(yawText, (int)this.x, (int)this.y-25);
-                g.drawString(pitchText, (int)this.x, (int)this.y-15);
-                g.drawString(rollText, (int)this.x, (int)this.y-5);
-
+                if(this.dx != 0 || this.dy != 0)
+                    drawPointer(g);
 
                 this.totalMovement += (Math.hypot(this.dx, this.dy)/this.circumference)*360;
 
@@ -135,8 +127,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
 
                 // draw dot
                 int dotSize = 10;
-                if((pitch < 270 && pitch > 90) || (roll < 270 && roll > 90))
-                {}
+                if((pitch < 270 && pitch > 90) || (roll < 270 && roll > 90));
                 else
                     g.fillOval((int)(((this.trackX+this.radius/2)+(dotSize/2))-2.5), (int)(((this.trackY+this.radius/2)+(dotSize/2))-2.5), dotSize, dotSize);
 
@@ -177,7 +168,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
                 Point ballPoint = new Point((int)(this.x+this.radius), (int)(this.y+this.radius));
                 Point holePoint = new Point(holeX, holeY);
 
-                if(ballPoint.distance(holePoint) <= holeRadius)
+                if(ballPoint.distance(holePoint) < holeRadius)
                     this.dontDrawBall();
             }
         }
@@ -255,7 +246,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
         this.dx += (this.dx != 0)? ((this.dx > 0) ? -frictionVelocityX : frictionVelocityX) : 0; // Updates the x velocity of the ActiveBall
         this.dy += (this.dy != 0)? ((this.dy > 0) ? -frictionVelocityY : frictionVelocityY) : 0; // Updates the y velocity of the ActiveBall
         
-        double minSpeed = 0.1; // minimum speed of the ActiveBall (to prevent it from moving forever)
+        double minSpeed = 0.5; // minimum speed of the ActiveBall (to prevent it from moving forever)
         this.dx = (Math.abs(this.dx) < minSpeed)? 0 : this.dx; // Sets the x velocity to 0 if it is less than the minimum speed
         this.dy = (Math.abs(this.dy) < minSpeed)? 0 : this.dy; // Sets the y velocity to 0 if it is less than the minimum speed
 
