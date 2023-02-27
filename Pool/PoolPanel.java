@@ -5,6 +5,8 @@ import Physics.ActiveBall;
 import java.awt.*;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.event.MouseInputListener;
+
 import java.awt.event.*;
 
 public class PoolPanel extends JPanel
@@ -17,6 +19,7 @@ public class PoolPanel extends JPanel
 	private int offsetY, offsetX; // Offset of the ActiveBalls
 	private int tableW, tableH; // Size of the table
 	private Hole[][] holes = new Hole[3][2];
+	private Point mousePos;
 
 	// Constructor
 	public PoolPanel(int w, int h)
@@ -51,7 +54,7 @@ public class PoolPanel extends JPanel
 		for(ActiveBall ball : balls)
 			ball.setColorFromID();
 
-		int multiplier = 6;
+		int multiplier = 8;
 		holes[0][0] = new Hole(150-radius*(multiplier/2), 0-radius*(multiplier/2), radius*multiplier, radius*multiplier); // top left
 		holes[1][0] = new Hole(150-radius*(multiplier/2)-10, 400-radius*(multiplier/2), radius*multiplier, radius*multiplier); // middle left
 		holes[2][0] = new Hole(150-radius*(multiplier/2), 800-radius*(multiplier/2), radius*multiplier, radius*multiplier); // bottom left
@@ -63,6 +66,8 @@ public class PoolPanel extends JPanel
 		// Adds user control
 		this.addKeyListener(new Keys());
 		this.addMouseListener(new MouseMove());
+		this.addMouseMotionListener(new MouseMove());
+		this.addMouseListener(new MoveBall());
 		this.setFocusable(true);
 
 		// Start the timer and set the background
@@ -106,6 +111,74 @@ public class PoolPanel extends JPanel
 			if(ball.collidesWithWall())
 				ball.collideWall();
 		}
+
+
+		for (ActiveBall ball : balls)
+		{
+			boolean win = true;
+			if(ball.getID() == 8 && !ball.drawBall())
+			{
+				for(ActiveBall ball2 : balls)
+				{
+					if(ball2.getID() != 8 && ball2.getID() != 0 && ball2.drawBall())
+					{
+						this.lose(g);
+						win = false;
+						break;
+					}
+				}
+				if(win)
+					this.win(g);
+			}
+		}
+		
+		if(!balls[15].drawBall() && mousePos != null && mousePos.x < 650 && mousePos.x > 150 && mousePos.y < 800 && mousePos.y > 0)
+		{
+			int tempRad = (int)balls[15].getRadius();
+			g.setColor(Color.WHITE);
+			g.fillOval(mousePos.x-tempRad, mousePos.y-tempRad, tempRad*2, tempRad*2);
+		}
+
+		if (mousePos != null && balls[15].getDx() == 0 && balls[15].getDy() == 0) {
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setColor(Color.MAGENTA);
+			g2.setStroke(new BasicStroke(5));
+			int x1 = (int) (balls[15].getX() + balls[15].getRadius());
+			int y1 = (int) (balls[15].getY() + balls[15].getRadius());
+			int x2 = mousePos.x;
+			int y2 = mousePos.y;
+			g2.drawLine(x1, y1, x2, y2);
+			g2.setColor(Color.GRAY);
+		
+			// calculate the second endpoint for the line to the end of the screen in the opposite direction
+			int x3, y3;
+			if (x2 > x1) {
+				x3 = 0;
+				y3 = y1 - (y2 - y1) * (x1 - x3) / (x2 - x1);
+			} else {
+				x3 = 800;
+				y3 = y1 - (y2 - y1) * (x1 - x3) / (x2 - x1);
+			}
+			g2.drawLine(x1, y1, x3, y3);
+		}
+	}
+
+	public void lose(Graphics g)
+	{
+		g.setColor(Color.RED);
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Arial", Font.BOLD, 50));
+		g.drawString("You Lose!", this.getWidth()/2-100, this.getHeight()/2);
+	}
+
+	public void win(Graphics g)
+	{
+		g.setColor(Color.GREEN);
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Arial", Font.BOLD, 50));
+		g.drawString("You Win!", this.getWidth()/2-100, this.getHeight()/2);
 	}
 
 
@@ -119,7 +192,26 @@ public class PoolPanel extends JPanel
 		}
 	}
 
-	private class MouseMove implements MouseListener
+	private class MoveBall implements MouseListener
+	{
+		public void mouseClicked(MouseEvent e)
+		{
+			if(balls[15].getDx() == 0 && balls[15].getDy() == 0)
+			{
+				double moveXRatio = balls[15].getX()+balls[15].getRadius()-e.getX();
+				double moveYRatio = balls[15].getY()+balls[15].getRadius()-e.getY();
+				double moveSpeed = balls[15].getLocation().distance(mousePos)/1000;
+				balls[15].setDx(moveXRatio*moveSpeed);
+				balls[15].setDy(moveYRatio*moveSpeed);
+			}
+		}
+		public void mouseEntered(MouseEvent e) {}
+		public void mouseExited(MouseEvent e) {}
+		public void mousePressed(MouseEvent e) {}
+		public void mouseReleased(MouseEvent e) {}
+	}
+
+	private class MouseMove implements MouseInputListener
 	{
 		public void mouseClicked(MouseEvent e)
 		{
@@ -129,6 +221,11 @@ public class PoolPanel extends JPanel
 		public void mouseExited(MouseEvent e) {}
 		public void mousePressed(MouseEvent e) {}
 		public void mouseReleased(MouseEvent e) {}
+		public void mouseDragged(MouseEvent e) {}
+		public void mouseMoved(MouseEvent e) 
+		{
+			mousePos = e.getPoint();
+		}
 	}
 	private class Keys implements KeyListener
 	{

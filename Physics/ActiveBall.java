@@ -155,7 +155,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
 
     public void setCuePos(double x, double y)
     {
-        if(useID && ID == 0 && !drawBall)
+        if(ID == 0 && !drawBall && x < 650 && x > 150 && y < 800 && y > 0)
         {
             this.x = x-radius;
             this.y = y-radius;
@@ -310,6 +310,11 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
             randColor();
             other.randColor();
         }
+    }
+
+    public boolean drawBall()
+    {
+        return this.drawBall;
     }
 
     public int getID() // Returns the ID of the ActiveBall
