@@ -16,6 +16,7 @@ public class PoolPanel extends JPanel
 	private int numBalls = 16; // Number of ActiveBalls to be created
 	private int offsetY, offsetX; // Offset of the ActiveBalls
 	private int tableW, tableH; // Size of the table
+	private Hole[][] holes = new Hole[3][2];
 
 	// Constructor
 	public PoolPanel(int w, int h)
@@ -26,11 +27,12 @@ public class PoolPanel extends JPanel
 		// Create a timer that will call the repaint method every (speedMS) milliseconds
 		timer = new Timer(speedMS, new repaintListener());
 		
-		offsetX = 250; // Offset of the ActiveBalls from the left side of the window
-		offsetY = 50; // Offset of the ActiveBalls from the top of the window
+
+		offsetX = 325; // Offset of the ActiveBalls from the left side of the window
+		offsetY = 120; // Offset of the ActiveBalls from the top of the window
 		
-		this.tableW = w; // Width of the table
-		this.tableH = h; // Height of the table
+		this.tableW = 500; // Width of the table
+		this.tableH = 800; // Height of the table
 
 		balls = new ActiveBall[numBalls]; // Creates an array of ActiveBalls
 		for(int i = 0; i < 5; i++) // Creates the first set of ActiveBalls
@@ -49,18 +51,38 @@ public class PoolPanel extends JPanel
 		for(ActiveBall ball : balls)
 			ball.setColorFromID();
 
+		int multiplier = 6;
+		holes[0][0] = new Hole(150-radius*(multiplier/2), 0-radius*(multiplier/2), radius*multiplier, radius*multiplier); // top left
+		holes[1][0] = new Hole(150-radius*(multiplier/2)-10, 400-radius*(multiplier/2), radius*multiplier, radius*multiplier); // middle left
+		holes[2][0] = new Hole(150-radius*(multiplier/2), 800-radius*(multiplier/2), radius*multiplier, radius*multiplier); // bottom left
+		
+		holes[0][1] = new Hole(650-radius*(multiplier/2), 0-radius*(multiplier/2), radius*multiplier, radius*multiplier); // top right
+		holes[1][1] = new Hole(650-radius*(multiplier/2)+10, 400-radius*(multiplier/2), radius*multiplier, radius*multiplier); // middle right
+		holes[2][1] = new Hole(650-radius*(multiplier/2), 800-radius*(multiplier/2), radius*multiplier, radius*multiplier); // bottom right
+
 		// Adds user control
 		this.addKeyListener(new Keys());
+		this.addMouseListener(new MouseMove());
 		this.setFocusable(true);
 
 		// Start the timer and set the background
 		timer.start();
-		setBackground(new Color(1, 40, 26));
+		setBackground(Color.BLACK);
 	}
 
 	public void paintComponent(Graphics g) // Paints the screen
 	{
 		super.paintComponent(g);
+
+		g.setColor(new Color(1, 40, 26));
+		g.fillRect((this.getWidth()-tableW)/2, 0, tableW, tableH);
+
+		for(ActiveBall ball : balls)
+			ball.collideWithHole(holes);
+		for(Hole[] hole : holes)
+			for(Hole h : hole)
+				h.drawHole(g);
+
 
 		for(ActiveBall ball : balls) // Draws the ActiveBalls
 		{
@@ -97,6 +119,17 @@ public class PoolPanel extends JPanel
 		}
 	}
 
+	private class MouseMove implements MouseListener
+	{
+		public void mouseClicked(MouseEvent e)
+		{
+			balls[15].setCuePos(e.getX(), e.getY());
+		}
+		public void mouseEntered(MouseEvent e) {}
+		public void mouseExited(MouseEvent e) {}
+		public void mousePressed(MouseEvent e) {}
+		public void mouseReleased(MouseEvent e) {}
+	}
 	private class Keys implements KeyListener
 	{
 		public void keyPressed(KeyEvent e)

@@ -2,6 +2,9 @@ package Physics;
 
 import java.awt.*;
 import java.util.Random;
+
+import Pool.Hole;
+
 import java.awt.geom.AffineTransform;
 
 public class ActiveBall // Keep in mind, this is a representation of a 3d sphere in a 2d space, the x and y coordinates have no z component because it is on a flat plane with no incline
@@ -23,6 +26,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
     private double pitch, roll, yaw;
     private double trackX, trackY;
     private double totalMovement;
+    private boolean drawBall = true;
 
     public ActiveBall(double x, double y, double dx, double dy, int w, int h) 
     {
@@ -60,90 +64,128 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
 
     public void draw(Graphics g) // Draws the ActiveBall
     {
-        updatePosition(); // Updates position of ActiveBall
-        g.fillOval((int)this.x, (int)this.y, (int)this.radius*2, (int)this.radius*2); // Draws the ActiveBall at its given place
-
-        if(useID) // Draws the ball if it's a pool ball
+        if(drawBall)
         {
-            // calculate rotation angles based on ball movement
-            this.pitch += (this.dx / this.circumference) * 360; // Rotation around y-axis
-            this.roll += (this.dy / this.circumference) * 360; // Rotation around x-axis
+            updatePosition(); // Updates position of ActiveBall
+            g.fillOval((int)this.x, (int)this.y, (int)this.radius*2, (int)this.radius*2); // Draws the ActiveBall at its given place
 
-            if(this.dx == 0 && this.dy == 0)
-                this.yaw = 0;
-            else
+            if(useID) // Draws the ball if it's a pool ball
             {
-                this.yaw = Math.toDegrees(Math.atan2(this.dy, this.dx))+90; // Rotation around z-axis
-                if(yaw < 0)
-                    yaw += 360;
+                // calculate rotation angles based on ball movement
+                this.pitch += (this.dx / this.circumference) * 360; // Rotation around y-axis
+                this.roll += (this.dy / this.circumference) * 360; // Rotation around x-axis
+
+                if(this.dx == 0 && this.dy == 0)
+                    this.yaw = 0;
+                else
+                {
+                    this.yaw = Math.toDegrees(Math.atan2(this.dy, this.dx))+90; // Rotation around z-axis
+                    if(yaw < 0)
+                        yaw += 360;
+                }
+            }
+            if(useID && ID != 0) // Draws the ball if it's a pool ball that isn't the cue ball
+            {
+                g.setColor(Color.WHITE);
+                int smallDiameter = (int) (this.radius*2*0.6);
+                int smallX = (int) (this.x + (this.radius - smallDiameter / 2));
+                int smallY = (int) (this.y + (this.radius - smallDiameter / 2));
+                g.fillOval(smallX, smallY, smallDiameter, smallDiameter);
+                    
+                g.setFont(new Font(g.getFont().getFontName(), Font.BOLD, g.getFont().getSize()));
+                g.setColor(Color.BLACK);
+                if(ID<10)
+                    g.drawString(ID+"", (int)(this.x+radius-3), (int)(this.y+radius+5));
+                else
+                    g.drawString(ID+"", (int)(this.x+radius-7), (int)(this.y+radius+5));
+            }
+            if(useID && ID == 0) // Draws Cue Ball
+            {
+                // calculate position of the dot based on rotation angles
+                double dotX = this.radius * Math.sin(Math.toRadians(this.pitch));
+                double dotY = this.radius * Math.sin(Math.toRadians(this.roll));
+
+                // translate position of the dot to ball's coordinates
+                this.trackX = this.x + dotX;
+                this.trackY = this.y + dotY;
+
+                // ensure dot stays inside ball
+                double distance = Math.sqrt(Math.pow(this.trackX - this.x, 2) + Math.pow(this.trackY - this.y, 2));
+                if(distance > this.radius) 
+                {
+                    double ratio = this.radius / distance;
+                    this.trackX = this.x + (this.trackX - this.x) * ratio;
+                    this.trackY = this.y + (this.trackY - this.y) * ratio;
+                }
+
+                drawPointer(g);
+
+                g.setColor(Color.WHITE);
+                String yawText = "yaw: " + (int)yaw;
+                String pitchText = "pitch: " + (int)pitch;
+                String rollText = "roll: " + (int)roll;
+                g.drawString(yawText, (int)this.x, (int)this.y-25);
+                g.drawString(pitchText, (int)this.x, (int)this.y-15);
+                g.drawString(rollText, (int)this.x, (int)this.y-5);
+
+
+                this.totalMovement += (Math.hypot(this.dx, this.dy)/this.circumference)*360;
+
+                g.setColor(Color.RED);
+
+                // draw dot
+                int dotSize = 10;
+                if((pitch < 270 && pitch > 90) || (roll < 270 && roll > 90))
+                {}
+                else
+                    g.fillOval((int)(((this.trackX+this.radius/2)+(dotSize/2))-2.5), (int)(((this.trackY+this.radius/2)+(dotSize/2))-2.5), dotSize, dotSize);
+
+                // wrap rotation angles if they go beyond 360 degrees
+                if (this.pitch >= 360)
+                    this.pitch -= 360;
+                if (this.roll >= 360)
+                    this.roll -= 360;
+                if (this.pitch < 0)
+                    this.pitch += 360;
+                if (this.roll < 0)
+                    this.roll += 360;
             }
         }
-        if(useID && ID != 0) // Draws the ball if it's a pool ball that isn't the cue ball
+    }
+
+    public void setCuePos(double x, double y)
+    {
+        if(useID && ID == 0 && !drawBall)
         {
-            g.setColor(Color.WHITE);
-            int smallDiameter = (int) (this.radius*2*0.6);
-            int smallX = (int) (this.x + (this.radius - smallDiameter / 2));
-            int smallY = (int) (this.y + (this.radius - smallDiameter / 2));
-            g.fillOval(smallX, smallY, smallDiameter, smallDiameter);
-                
-            g.setFont(new Font(g.getFont().getFontName(), Font.BOLD, g.getFont().getSize()));
-            g.setColor(Color.BLACK);
-            if(ID<10)
-                g.drawString(ID+"", (int)(this.x+radius-3), (int)(this.y+radius+5));
-            else
-                g.drawString(ID+"", (int)(this.x+radius-7), (int)(this.y+radius+5));
+            this.x = x-radius;
+            this.y = y-radius;
+            this.dx = 0;
+            this.dy = 0;
+            drawBall = true;
         }
-        if(useID && ID == 0) // Draws Cue Ball
+    }
+
+    public void collideWithHole(Hole[][] holes)
+    {
+        for(Hole[] holeSuper : holes)
         {
-            // calculate position of the dot based on rotation angles
-            double dotX = this.radius * Math.sin(Math.toRadians(this.pitch));
-            double dotY = this.radius * Math.sin(Math.toRadians(this.roll)) * -1; // flip y-axis
-
-            // translate position of the dot to ball's coordinates
-            this.trackX = this.x + dotX;
-            this.trackY = this.y + dotY;
-
-            // ensure dot stays inside ball
-            double distance = Math.sqrt(Math.pow(this.trackX - this.x, 2) + Math.pow(this.trackY - this.y, 2));
-            if(distance > this.radius) 
+            for(Hole hole : holeSuper)
             {
-                double ratio = this.radius / distance;
-                this.trackX = this.x + (this.trackX - this.x) * ratio;
-                this.trackY = this.y + (this.trackY - this.y) * ratio;
+                int holeRadius = hole.getRadius();
+                int holeX = hole.getX() + holeRadius;
+                int holeY = hole.getY() + holeRadius;
+                Point ballPoint = new Point((int)(this.x+this.radius), (int)(this.y+this.radius));
+                Point holePoint = new Point(holeX, holeY);
+
+                if(ballPoint.distance(holePoint) <= holeRadius)
+                    this.dontDrawBall();
             }
-
-
-            drawPointer(g);
-
-            g.setColor(Color.WHITE);
-            String yawText = "yaw: " + (int)yaw;
-            String pitchText = "pitch: " + (int)pitch;
-            String rollText = "roll: " + (int)roll;
-            g.drawString(yawText, (int)this.x, (int)this.y-25);
-            g.drawString(pitchText, (int)this.x, (int)this.y-15);
-            g.drawString(rollText, (int)this.x, (int)this.y-5);
-
-
-            this.totalMovement += (Math.hypot(this.dx, this.dy)/this.circumference)*360;
-            System.out.println(totalMovement);
-
-            g.setColor(Color.RED);
-
-            // draw dot
-            int dotSize = 10;
-            if(pitch > 270 || pitch < 90 || roll > 270 || roll < 90)
-                g.fillOval((int)(((this.trackX+this.radius/2)+(dotSize/2))-2.5), (int)(((this.trackY+this.radius/2)+(dotSize/2))-2.5), dotSize, dotSize);
-
-            // wrap rotation angles if they go beyond 360 degrees
-            if (this.pitch >= 360)
-                this.pitch -= 360;
-            if (this.roll >= 360)
-                this.roll -= 360;
-            if (this.pitch < 0)
-                this.pitch += 360;
-            if (this.roll < 0)
-                this.roll += 360;
         }
+    }
+
+    public void dontDrawBall() // Sets drawBall to false
+    {
+        this.drawBall = false;
     }
 
     public void drawPointer(Graphics g)
@@ -190,12 +232,12 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
 
     public boolean collidesWithWall() // Checks if the ActiveBall collides with the wall
     {
-        return this.x + this.dx <= 0 || this.x + this.dx >= this.w-this.radius*2 || this.y + this.dy <= 0 || this.y + this.dy >= this.h-this.radius*2;
+        return this.x + this.dx <= 650 || this.x + this.dx >= (this.w-this.radius*2)+150 || this.y + this.dy <= 0 || this.y + this.dy >= this.h-this.radius*2;
     }
 
     public void collideWall() // Responds to collision with wall
     {
-        if(this.x + this.dx <= 0 || this.x + this.dx >= this.w-this.radius*2)
+        if(this.x + this.dx <= 150 || this.x + this.dx >= (this.w-this.radius*2)+150)
             this.dx *= -1;
         if(this.y + this.dy <= 0 || this.y + this.dy >= this.h-this.radius*2)
             this.dy *= -1;
@@ -351,6 +393,11 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
     public void setDx(double dx) // Overrides the x-velocity with the value passed into the method
     {
         this.dx = dx;
+    }
+    
+    public double getTotalMovement()
+    {
+        return totalMovement;
     }
 
     public double getDy() // Returns y-velocity
