@@ -22,7 +22,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
     private double circumference; // Circumference of the ActiveBall
     private double pitch, roll, yaw;
     private double trackX, trackY;
-    private double velocityAngle, velocityAngleMove;
+    private double totalMovement;
 
     public ActiveBall(double x, double y, double dx, double dy, int w, int h) 
     {
@@ -124,17 +124,15 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
             g.drawString(rollText, (int)this.x, (int)this.y-5);
 
 
-            velocityAngle = (Math.hypot(this.dx, this.dy)/this.circumference)*360;
-            velocityAngleMove+=velocityAngle;
-            if(velocityAngleMove > 360)
-                velocityAngleMove -= 360;
-            System.out.println(velocityAngleMove);
+            this.totalMovement += (Math.hypot(this.dx, this.dy)/this.circumference)*360;
+            System.out.println(totalMovement);
 
             g.setColor(Color.RED);
 
             // draw dot
             int dotSize = 10;
-            g.fillOval((int)(((this.trackX+this.radius/2)+(dotSize/2))-2.5), (int)(((this.trackY+this.radius/2)+(dotSize/2))-2.5), dotSize, dotSize);
+            if(pitch > 270 || pitch < 90 || roll > 270 || roll < 90)
+                g.fillOval((int)(((this.trackX+this.radius/2)+(dotSize/2))-2.5), (int)(((this.trackY+this.radius/2)+(dotSize/2))-2.5), dotSize, dotSize);
 
             // wrap rotation angles if they go beyond 360 degrees
             if (this.pitch >= 360)
