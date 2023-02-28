@@ -202,7 +202,7 @@ public class PoolPanel extends JPanel
 			{
 				double moveXRatio = balls[15].getX()+balls[15].getRadius()-e.getX();
 				double moveYRatio = balls[15].getY()+balls[15].getRadius()-e.getY();
-				double moveSpeed = balls[15].getLocation().distance(mousePos)/1250;
+				double moveSpeed = balls[15].getLocation().distance(mousePos)/1500;
 				balls[15].setDx(moveXRatio*moveSpeed);
 				balls[15].setDy(moveYRatio*moveSpeed);
 			}

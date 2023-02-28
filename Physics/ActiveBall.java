@@ -247,8 +247,11 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
         this.dy += (this.dy != 0)? ((this.dy > 0) ? -frictionVelocityY : frictionVelocityY) : 0; // Updates the y velocity of the ActiveBall
         
         double minSpeed = 0.5; // minimum speed of the ActiveBall (to prevent it from moving forever)
-        this.dx = (Math.abs(this.dx) < minSpeed)? 0 : this.dx; // Sets the x velocity to 0 if it is less than the minimum speed
-        this.dy = (Math.abs(this.dy) < minSpeed)? 0 : this.dy; // Sets the y velocity to 0 if it is less than the minimum speed
+        if(Math.abs(this.dx) < minSpeed && Math.abs(this.dy) < minSpeed) // Sets the x and y velocities to 0 if they are both less than the minimum speed
+        {
+            this.dx = 0;
+            this.dy = 0;
+        }
 
         this.x += this.dx; // Updates the x position of the ActiveBall
         this.y += this.dy; // Updates the y position of the ActiveBall
