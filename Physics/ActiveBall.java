@@ -41,7 +41,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
         useID = false;
 
         // Randomize the mass of the ActiveBall between (min) and (max)
-        this.mass = rand.nextDouble(max-min) + min;
+        this.mass = rand.nextDouble()*(max-min) + min;
     }
 
     public ActiveBall(double x, double y, int w, int h, int radius, int ID) // Start with no velocity and a set radius and ID (used for pool)
@@ -59,7 +59,7 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
         regenCircumference();
 
         // Randomize the mass of the ActiveBall between (min) and (max)
-        this.mass = rand.nextDouble(max-min) + min;
+        this.mass = rand.nextDouble()*(max-min) + min;
     }
 
     public void draw(Graphics g) // Draws the ActiveBall
@@ -342,13 +342,13 @@ public class ActiveBall // Keep in mind, this is a representation of a 3d sphere
 
     public void regenMass() // Regenerates the mass of the ActiveBall
     {
-        this.mass = rand.nextDouble(max-min) + min;
+        this.mass = rand.nextDouble()*(max-min) + min;
     }
 
     public void regenVelocity(double speedDiff) // Regenerates the velocity of the ActiveBall
     {
-        this.dx = rand.nextDouble(speedDiff) - speedDiff/2;
-		this.dy = rand.nextDouble(speedDiff) - speedDiff/2;
+        this.dx = rand.nextDouble()*speedDiff - speedDiff/2;
+		this.dy = rand.nextDouble()*speedDiff - speedDiff/2;
     }
 
     public void setMassRange(double min, double max, boolean recalculate) // Sets the minimum and maximum mass of the ActiveBall maximum must be lower than minimum. If recalculate is true, the mass of the ActiveBall will be regenerated.

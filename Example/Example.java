@@ -36,8 +36,8 @@ public class Example extends JPanel
 		{
 			double x = rand.nextInt(w/2) + w/4;
 			double y = rand.nextInt(h/2) + h/4;
-			double dx = rand.nextDouble(speedDiff) - speedDiff/2;
-			double dy = rand.nextDouble(speedDiff) - speedDiff/2;
+			double dx = rand.nextDouble()*speedDiff - speedDiff/2;
+			double dy = rand.nextDouble()*speedDiff - speedDiff/2;
 			balls[i] = new ActiveBall(x, y, dx, dy, w, h);
 		}
 
@@ -54,7 +54,7 @@ public class Example extends JPanel
 	{
 		super.paintComponent(g);
 
-		for(ActiveBall ball : balls) // Draws the ActiveBallsalls
+		for(ActiveBall ball : balls) // Draws the ActiveBalls
 		{
 			g.setColor(ball.getColor());
 
@@ -104,8 +104,8 @@ public class Example extends JPanel
 		{
 			double x = rand.nextInt(this.getWidth()/2) + this.getWidth()/4;
 			double y = rand.nextInt(this.getHeight()/2) + this.getHeight()/4;
-			double dx = rand.nextDouble(speedDiff) - speedDiff/2;
-			double dy = rand.nextDouble(speedDiff) - speedDiff/2;
+			double dx = rand.nextDouble()*speedDiff - speedDiff/2;
+			double dy = rand.nextDouble()*speedDiff - speedDiff/2;
 			balls[i] = new ActiveBall(x, y, dx, dy, this.getWidth(), this.getHeight());
 		}
 	}
@@ -114,8 +114,8 @@ public class Example extends JPanel
 	{
 		for (int i = 0; i < numBalls; i++) 
 		{
-			double dx = rand.nextDouble(speedDiff) - speedDiff/2;
-			double dy = rand.nextDouble(speedDiff) - speedDiff/2;
+			double dx = rand.nextDouble()*speedDiff - speedDiff/2;
+			double dy = rand.nextDouble()*speedDiff - speedDiff/2;
 			balls[i] = new ActiveBall(x, y, dx, dy, this.getWidth(), this.getHeight());
 		}
 	}
@@ -188,8 +188,8 @@ public class Example extends JPanel
 						newBalls[i] = balls[i];
 					for(int i = balls.length; i < newBalls.length; i++)
 					{
-						double dx = rand.nextDouble(speedDiff) - speedDiff/2;
-						double dy = rand.nextDouble(speedDiff) - speedDiff/2;
+						double dx = rand.nextDouble()*speedDiff - speedDiff/2;
+						double dy = rand.nextDouble()*speedDiff - speedDiff/2;
 						newBalls[i] = new ActiveBall(mousePos.x, mousePos.y, dx, dy, getWidth(), getHeight());
 					}
 					balls = newBalls;
